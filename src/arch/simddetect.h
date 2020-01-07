@@ -54,7 +54,15 @@ class SIMDDetect {
   static inline bool IsSSEAvailable() {
     return detector.sse_available_;
   }
-
+  // Returns true if NEON (integer support) is available on this system.
+  static inline bool IsNEON32Available() {
+    return detector.neon32_available_;
+  }
+  // Returns true if NEON (float support) is available on this system.
+  static inline bool IsNEON64Available() {
+    return detector.neon64_available_;
+  }
+  
   // Update settings after config variable was set.
   static TESS_API void Update();
 
@@ -74,6 +82,9 @@ class SIMDDetect {
   static TESS_API bool fma_available_;
   // If true, then SSe4.1 has been detected.
   static TESS_API bool sse_available_;
+  // If true, then ARM Neon has been detected.
+  static TESS_API bool neon32_available_;
+  static TESS_API bool neon64_available_;
 };
 
 }  // namespace tesseract

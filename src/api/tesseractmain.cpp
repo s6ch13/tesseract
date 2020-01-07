@@ -141,6 +141,8 @@ static void PrintVersionInfo() {
   if (tesseract::SIMDDetect::IsAVXAvailable()) printf(" Found AVX\n");
   if (tesseract::SIMDDetect::IsFMAAvailable()) printf(" Found FMA\n");
   if (tesseract::SIMDDetect::IsSSEAvailable()) printf(" Found SSE\n");
+  if (tesseract::SIMDDetect::IsNEON32Available()) printf(" Found Neon 32b\n");
+  if (tesseract::SIMDDetect::IsNEON64Available()) printf(" Found Neon 64b\n");
 #ifdef _OPENMP
   printf(" Found OpenMP %d\n", _OPENMP);
 #endif

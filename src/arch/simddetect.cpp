@@ -63,6 +63,10 @@ bool SIMDDetect::avx512BW_available_;
 bool SIMDDetect::fma_available_;
 // If true, then SSe4.1 has been detected.
 bool SIMDDetect::sse_available_;
+// if true then ARM neon is detected.
+// 64b neon supports additional instructions
+bool SIMDDetect::neon32_available_;
+bool SIMDDetect::neon64_available_;
 
 // Computes and returns the dot product of the two n-vectors u and v.
 static double DotProductGeneric(const double* u, const double* v, int n) {
@@ -141,14 +145,22 @@ SIMDDetect::SIMDDetect() {
         avx512F_available_ = (cpuInfo[1] & 0x00010000) != 0;
         avx512BW_available_ = (cpuInfo[1] & 0x40000000) != 0;
       }
-#endif
+#endif // HAVE_AVX2
     }
 #endif
   }
+#endif 
+#elif defined(HAVE_NEON)
+
+#if defined(__aarch64__)
+  neon64_available_ = 1;
+#else
+  neon32_available_ = 1;
+#endif // __arch64__
 #else
 #error "I don't know how to test for SIMD with this compiler"
 #endif
-#endif
+
 
   // Select code for calculation of dot product based on autodetection.
   if (false) {
@@ -168,6 +180,15 @@ SIMDDetect::SIMDDetect() {
     // SSE detected.
     SetDotProduct(DotProductSSE, &IntSimdMatrix::intSimdMatrixSSE);
 #endif
+#if defined(HAVE_NEON)
+  } else if (neon64_available_) {
+    // NEON64 detected
+    SetDotProduct(DotProductNEON, &IntSimdMatrix::intSimdMatrixNEON);
+  } else if (neon32_available_) {
+    // NEON32 detected
+    SetDotProduct(DotProductNEON, &IntSimdMatrix::intSimdMatrixNEON);
+#endif
+
   }
 }
 
@@ -209,6 +230,13 @@ void SIMDDetect::Update() {
     SetDotProduct(DotProductSSE, &IntSimdMatrix::intSimdMatrixSSE);
     dotproduct_method = "sse";
 #endif
+#if defined(HAVE_NEON)
+  } else if (!strcmp(dotproduct.c_str(), "neon")) {
+    // SSE selected by config variable.
+    SetDotProduct(DotProductNEON, &IntSimdMatrix::intSimdMatrixNEON);
+    dotproduct_method = "neon";
+#endif
+
   } else if (!strcmp(dotproduct.c_str(), "std::inner_product")) {
     // std::inner_product selected by config variable.
     SetDotProduct(DotProductStdInnerProduct);
@@ -223,6 +251,9 @@ void SIMDDetect::Update() {
 #endif
 #if defined(HAVE_SSE4_1)
             " sse"
+#endif
+#if defined(HAVE_NEON)
+	    " neon"
 #endif
             " std::inner_product.\n");
   }

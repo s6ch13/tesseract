@@ -1,8 +1,9 @@
 ///////////////////////////////////////////////////////////////////////
-// File:        dotproduct.h
-// Description: Native dot product function.
+// File:        dotproductneon.cpp
+// Description: Architecture-specific dot-product function.
+// Author:      Sriram C.
+// Created:     Wed Jul 22 10:57:45 PDT 2018
 //
-// (C) Copyright 2018, Google Inc.
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -14,27 +15,36 @@
 // limitations under the License.
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef TESSERACT_ARCH_DOTPRODUCT_H_
-#define TESSERACT_ARCH_DOTPRODUCT_H_
 
+#include <iostream>
+#if !defined(__ARM_NEON__)
+#error Implementation only for ARM NEON capable architectures
+#endif
+
+
+#include <cstdint>
+#include "dotproduct.h"
+#include <arm_neon.h>
 namespace tesseract {
 
+#if !defined(__AARCH64__)
+
+double DotProductNEON(const double* u, const double* v, int n) {
+  fprintf(stderr, "DotProduct can't be used on Aarch32\n");
+  abort();
+}
+#else
+// ARM 64 bit stuff
 // Computes and returns the dot product of the n-vectors u and v.
-double DotProductNative(const double* u, const double* v, int n);
-
-// Uses Intel AVX intrinsics to access the SIMD instruction set.
-double DotProductAVX(const double* u, const double* v, int n);
-
-// Use Intel FMA.
-double DotProductFMA(const double* u, const double* v, int n);
-
-// Uses Intel SSE intrinsics to access the SIMD instruction set.
-double DotProductSSE(const double* u, const double* v, int n);
-
 // Uses ARM NEON intrinsics to access the SIMD instruction set.
-double DotProductNEON(const double* u, const double* v, int n);
 
- 
+double DotProductNEON(const double* u, const double* v, int n) {
+  // Place holder for dot product neon
+}
+#endif
+
+
+
 }  // namespace tesseract.
 
-#endif  // TESSERACT_ARCH_DOTPRODUCT_H_
+
