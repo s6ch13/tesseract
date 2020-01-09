@@ -31,10 +31,6 @@ double DotProductFMA(const double* u, const double* v, int n);
 // Uses Intel SSE intrinsics to access the SIMD instruction set.
 double DotProductSSE(const double* u, const double* v, int n);
 
-// Uses ARM NEON intrinsics to access the SIMD instruction set.
-double DotProductNEON(const double* u, const double* v, int n);
-
- 
 }  // namespace tesseract.
 
 #endif  // TESSERACT_ARCH_DOTPRODUCT_H_

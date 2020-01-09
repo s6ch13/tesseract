@@ -181,12 +181,9 @@ SIMDDetect::SIMDDetect() {
     SetDotProduct(DotProductSSE, &IntSimdMatrix::intSimdMatrixSSE);
 #endif
 #if defined(HAVE_NEON)
-  } else if (neon64_available_) {
-    // NEON64 detected
-    SetDotProduct(DotProductNEON, &IntSimdMatrix::intSimdMatrixNEON);
-  } else if (neon32_available_) {
-    // NEON32 detected
-    SetDotProduct(DotProductNEON, &IntSimdMatrix::intSimdMatrixNEON);
+  } else if (neon64_available_ || neon32_available_) {
+    // NEON detected
+    SetDotProduct(DotProductNative, &IntSimdMatrix::intSimdMatrixNEON);
 #endif
 
   }
@@ -232,8 +229,8 @@ void SIMDDetect::Update() {
 #endif
 #if defined(HAVE_NEON)
   } else if (!strcmp(dotproduct.c_str(), "neon")) {
-    // SSE selected by config variable.
-    SetDotProduct(DotProductNEON, &IntSimdMatrix::intSimdMatrixNEON);
+    // NEON selected by config variable.
+    SetDotProduct(DotProductNative, &IntSimdMatrix::intSimdMatrixNEON);
     dotproduct_method = "neon";
 #endif
 

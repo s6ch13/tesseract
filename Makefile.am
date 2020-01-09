@@ -185,11 +185,10 @@ endif
 
 if HAVE_NEON
 libtesseract_neon_la_CXXFLAGS = -O3 -mfpu=neon-vfpv4 -ffast-math -ftree-vectorize -mvectorize-with-neon-quad
-libtesseract_neon_la_SOURCES = src/arch/dotproductneon.cpp src/arch/intsimdmatrixneon.cpp
+libtesseract_neon_la_SOURCES = src/arch/intsimdmatrixneon.cpp
 libtesseract_la_LIBADD += libtesseract_neon.la
 noinst_LTLIBRARIES += libtesseract_neon.la
 endif
-
 
 libtesseract_la_SOURCES += src/arch/intsimdmatrix.cpp
 libtesseract_la_SOURCES += src/arch/simddetect.cpp
