@@ -20,8 +20,6 @@
 #include <tesseract/genericvector.h>      // for GenericVector
 #include "matrix.h"             // for GENERIC_2D_ARRAY
 #include "simddetect.h"         // for SIMDDetect
-#include "tprintf.h"
-#include <arm_neon.h>
 
 namespace tesseract {
 
@@ -83,16 +81,6 @@ void IntSimdMatrix::MatrixDotVector(const GENERIC_2D_ARRAY<int8_t>& w,
                                     const int8_t* u, double* v) {
   int num_out = w.dim1();
   int num_in = w.dim2() - 1;
-
-  // FIXME
-  static int count = 0;
-  
-  if (count == 0) {
-    tprintf("generic Init");
-  }
-  count++;
-
-  
   // Base implementation.
   for (int i = 0; i < num_out; ++i) {
     const int8_t* wi = w[i];
